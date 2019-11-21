@@ -72,7 +72,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', indexRouter);
-app.use('/', authenticationRouter);
+app.use('/auth', authenticationRouter);
 
 app.use('*', (req, res, next) => {
   const error = new Error('Page not found.');
