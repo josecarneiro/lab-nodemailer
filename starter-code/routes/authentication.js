@@ -3,6 +3,7 @@ const router = new Router();
 
 const User = require('./../models/user');
 const bcryptjs = require('bcryptjs');
+const sendConfEmail = require("../services/mailer");
 
 router.get('/', (req, res, next) => {
   res.render('index');
@@ -25,6 +26,7 @@ router.post('/sign-up', (req, res, next) => {
     })
     .then(user => {
       req.session.user = user._id;
+      sendConfEmail(user.email, user.confirmationCode);
       res.redirect('/');
     })
     .catch(error => {
@@ -64,6 +66,11 @@ router.post('/sign-in', (req, res, next) => {
 router.post('/sign-out', (req, res, next) => {
   req.session.destroy();
   res.redirect('/');
+});
+
+router.get("/auth/confirm/:token", (req, res, next) => {
+  // TODO: I was here
+  User.findOneAndUpdate({confirmationCode: req.params.token}, {status: Active});
 });
 
 const routeGuard = require('./../middleware/route-guard');
