@@ -60,11 +60,31 @@ router.post('/sign-up', (req, res, next) => {
         <p>http://localhost:3000/auth/confirm/${token}</p>
       `
     })
-        // text: `http://localhost:3000/auth/confirm/${token}`
     })
     .catch(error => {
       next(error);
     });
+});
+
+router.get("/auth/confirm/:confirmCode", (req, res, next) => {
+  let confirmer = req.params.confirmCode;
+  User.findOneAndUpdate(
+    { confirmationCode: confirmer },
+    { status: "Active" })
+  .then(user => {res.render('confirmation.hbs'),
+  console.log("page was found")})
+  .catch(error => {
+    next(error);
+  });
+});
+
+// use promise and pass user to use it in the hbs file
+router.get('/profile', (req, res, next) => {
+  User.findById(req.session.user)
+  .then(user => {
+    res.render('profile.hbs', {user}
+    )
+  });
 });
 
 router.get('/sign-in', (req, res, next) => {
