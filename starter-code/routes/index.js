@@ -12,4 +12,8 @@ router.get('/private', (req, res, next) => {
   res.render('private');
 });
 
+router.get('/success', (req, res, next) => {
+  res.render('success');
+});
+
 module.exports = router;
