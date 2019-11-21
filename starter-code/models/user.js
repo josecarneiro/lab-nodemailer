@@ -13,6 +13,15 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true
     },
+    status: {
+      type: String,
+      enum: ["Pending Confirmation", "Active"],
+      default: "Pending Confirmation"
+    },
+    confirmationCode: {
+      type: String,
+      unique: true,
+    },
     passwordHash: {
       type: String,
       required: true
