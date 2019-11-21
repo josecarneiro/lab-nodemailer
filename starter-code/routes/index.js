@@ -8,6 +8,10 @@ router.get('/', (req, res, next) => {
   res.render('index', { title: 'Hello World!' });
 });
 
+router.get('/profile', (req, res, next) => {
+  res.render('profile');
+});
+
 router.get('/private', (req, res, next) => {
   res.render('private');
 });

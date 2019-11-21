@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const router = new Router();
+const nodemailer = require('nodemailer');
 
 const User = require('./../models/user');
 const bcryptjs = require('bcryptjs');
@@ -12,21 +13,69 @@ router.get('/sign-up', (req, res, next) => {
   res.render('sign-up');
 });
 
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  }
+});
+
 router.post('/sign-up', (req, res, next) => {
   const { name, email, password } = req.body;
+  let token = '';
+
+  const generateId = length => {
+    const characters =
+    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for (let i = 0; i < length; i++) {
+      token += characters[Math.floor(Math.random() * characters.length)];
+  };
+  }
+  generateId(12)
   bcryptjs
     .hash(password, 10)
     .then(hash => {
       return User.create({
         name,
         email,
-        passwordHash: hash
+        passwordHash: hash,
+        confirmationCode : token
       });
     })
     .then(user => {
       req.session.user = user._id;
+      console.log(req.session.user.email)
       res.redirect('/');
     })
+    .then(
+      transporter.sendMail({
+        from: `IH Test <${process.env.EMAIL}>`,
+        to: req.body.email,
+        subject: 'This is boring...',
+        //text: `http://localhost:3000/auth/confirm/${token}`,
+        html: `
+          <style>
+            h1 {
+              /* color: green !important; */
+            }
+          </style>
+          <h1 style="color: green">I'm offff</h1>
+          <a href ="http://localhost:3000/auth/confirm/${token}">Click here</a>
+          <p><strong>Goodbye</strong> <em>Ironcats!</em></p>
+        `
+      }))
+    .catch(error => {
+      next(error);
+    });
+});
+
+router.get('/auth/confirm/:code', (req, res, next) => {
+  const code = req.params.code;
+  User.findOneAndUpdate({confirmationCode : code}, {status: "Active"})
+    .then(user => {
+        res.render('confirmed', { user });
+      })
     .catch(error => {
       next(error);
     });
