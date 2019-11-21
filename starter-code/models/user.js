@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["Pending Confirmation", "Active"]
   },
-  confirmationCode: {
+  confirmationKey: {
     type: String,
     unique: true
   },
