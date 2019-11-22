@@ -16,6 +16,16 @@ const userSchema = new mongoose.Schema(
     passwordHash: {
       type: String,
       required: true
+    },
+    type: {
+      type: String,
+      enum : ['Pending Confirmation', 'Active'],
+      default: 'Pending Confirmation'
+    },
+    confirmationCode:{
+      type:String,
+      required: true,
+      unique: true
     }
   },
   {
