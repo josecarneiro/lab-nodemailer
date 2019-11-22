@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
     },
     confirmationCode: {
       type: String,
-      default: generateId
+      default: generateId(30)
     }
   },
   {

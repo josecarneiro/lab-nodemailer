@@ -70,7 +70,9 @@ router.post('/sign-out', (req, res, next) => {
 
 router.get("/auth/confirm/:token", (req, res, next) => {
   // TODO: I was here
-  User.findOneAndUpdate({confirmationCode: req.params.token}, {status: Active});
+  User.findOneAndUpdate({confirmationCode: req.params.token}, {status: "Active"}).then(response => {
+    res.redirect('/');
+  }); 
 });
 
 const routeGuard = require('./../middleware/route-guard');
