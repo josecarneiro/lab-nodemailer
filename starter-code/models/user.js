@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    type: {
+    status: {
       type: String,
       enum : ['Pending Confirmation', 'Active'],
       default: 'Pending Confirmation'
