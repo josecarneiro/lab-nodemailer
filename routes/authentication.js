@@ -76,14 +76,17 @@ router.post('/sign-up', (req, res, next) => {
 
 router.get('/confirm/:confirmCode', (req, res, next) => {
   let confirm = req.params.confirmCode;
+  const filter = { confirmationCode: `${confirm}` };
+  const update = { status: `Active` };
+
   console.log(confirm);
-  //return User.findOneAndUpdate({ confirmationCode: confirm }, { status: 'Active' })
-  //.then((document) => {
-  //console.log(document);
-  //})
-  //.catch((error) => {
-  //next(error);
-  //});
+  return User.findOneAndUpdate(filter, update)
+    .then((document) => {
+      res.render('confirm');
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 router.get('/sign-in', (req, res, next) => {
