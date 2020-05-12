@@ -43,6 +43,7 @@ router.post('/sign-up', (req, res, next) => {
         name,
         email,
         passwordHash: hash,
+        status: 'Pending Confirmation',
         confirmationCode: generateRandom(10)
       })
     }) 
@@ -64,6 +65,16 @@ router.post('/sign-up', (req, res, next) => {
         next(error);
       });
     });
+
+
+router.get('/auth/confirm/:confirmationCode', (req, res, next) => {
+  const confirmationCodeReturn = req.params.confirmationCodeReturn;
+  if(confirmationCodeReturn === req.body.confirmationCode) {
+    req.body.status = 'Active'}
+    console.log('User successfully verified e-mail')
+    console.log( req.body.status)
+    res.render('confirmation');
+});
 
 
 router.get('/sign-in', (req, res, next) => {
@@ -106,4 +117,10 @@ router.get('/private', routeGuard, (req, res, next) => {
   res.render('private');
 });
 
+
+router.get('/profile', routeGuard, (req, res, next) => {
+  status = req.body.status
+  res.render('profile');
+});
+  
 module.exports = router;
