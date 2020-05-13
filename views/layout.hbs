@@ -13,12 +13,12 @@
       {{!-- Display relevant routes for non-authenticated vs. authenticated user --}}
       {{#if user}}
         <a href="/">{{user.name}}'s Profile</a>
-        <form action="/sign-out" method="POST">
+        <form action="/auth/sign-out" method="POST">
           <button>Sign Out</button>
         </form>
         {{else}}
-        <a href="/sign-in">Sign In</a>
-        <a href="/sign-up">Sign Up</a>
+        <a href="/auth/sign-in">Sign In</a>
+        <a href="/auth/sign-up">Sign Up</a>
       {{/if}}
     </nav>
     {{{body}}}
