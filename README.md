@@ -27,7 +27,7 @@ $ git push origin master
 
 ## Instructions
 
-## Lab Setup
+### Lab Setup
 
 - First you need to install all the dependencies. You might need more installations to successfully complete the lab.
 
