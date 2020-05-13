@@ -27,6 +27,29 @@ $ git push origin master
 
 ## Instructions
 
+### Lab Setup
+
+- First you need to install all the dependencies. You might need more installations to successfully complete the lab.
+
+```
+$ npm install
+```
+
+- Add a .env file with all the required information. You might need to add more enviromental variables to the .env file to successfully complete the lab.
+
+```
+PORT=3000
+MONGODB_URI=mongodb://127.0.0.1:27017/lab-nodemailer
+NODE_ENV=development
+SESSION_SECRET=thislabrules
+```
+
+- Run the server to check that all the setup has been completed. You should be able to see the index view.
+
+```
+npm run dev
+```
+
 ### Iteration 1 - User Model
 
 First, we need to modify the `User` model. Inside the `models` folder, you will find a `user.js` file. We already have the `email` and `password` fields, so we need to add the followings:
@@ -38,7 +61,7 @@ First, we need to modify the `User` model. Inside the `models` folder, you will 
 
 #### Adding the new fields
 
-On the `auth/signup.hbs` file you need to add an `input` tag for the **email**. When the user clicks on the `signup` button, you should store the following values in the database:
+On the `auth/signup.hbs` file you have an `input` tag for the **email**. When the user clicks on the `signup` button, you should store the following values in the database:
 
 - **password** - after hashing the value of the `password` field from the `req.body`;
 - **email** - from the `req.body`;
@@ -47,9 +70,9 @@ On the `auth/signup.hbs` file you need to add an `input` tag for the **email**. 
 Example:
 
 ```js
-const generateId = length => {
-  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let token = '';
+const generateId = (length) => {
+  const characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let token = "";
   for (let i = 0; i < length; i++) {
     token += characters[Math.floor(Math.random() * characters.length)];
   }
