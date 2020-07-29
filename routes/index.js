@@ -2,10 +2,15 @@
 
 const { Router } = require('express');
 const router = new Router();
+const User = require('./../models/user');
 
 router.get('/', (req, res, next) => {
   console.log(req.user);
   res.render('index', { title: 'Hello World!' });
+});
+
+router.get('/profile', (req, res, next) => {
+  res.render('profile');
 });
 
 router.get('/private', (req, res, next) => {

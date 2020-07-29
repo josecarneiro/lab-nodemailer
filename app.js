@@ -15,6 +15,8 @@ const User = require('./models/user');
 
 const app = express();
 
+mongoose.set('useFindAndModify', false);
+
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -52,12 +54,12 @@ app.use((req, res, next) => {
   const userId = req.session.user;
   if (userId) {
     User.findById(userId)
-      .then(user => {
+      .then((user) => {
         req.user = user;
         res.locals.user = req.user;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         next(error);
       });
   } else {
