@@ -4,6 +4,25 @@ const router = new Router();
 const User = require('./../models/user');
 const bcryptjs = require('bcryptjs');
 
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.NODEMAILER_EMAIL,
+    pass: process.env.NODEMAILER_PASSWORD
+  }
+});
+
+const generateRandom = length => {
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let token = '';
+  for (let i = 0; i < length; i++) {
+    token += characters[Math.floor(Math.random() * characters.length)];
+  }
+  return token
+};
+
 router.get('/', (req, res, next) => {
   res.render('index');
 });
@@ -12,25 +31,51 @@ router.get('/sign-up', (req, res, next) => {
   res.render('sign-up');
 });
 
+
+
 router.post('/sign-up', (req, res, next) => {
   const { name, email, password } = req.body;
+
   bcryptjs
     .hash(password, 10)
     .then(hash => {
       return User.create({
         name,
         email,
-        passwordHash: hash
+        passwordHash: hash,
+        status: 'Pending Confirmation',
+        confirmationCode: generateRandom(10)
+      })
+    }) 
+    .then ((user) => {
+       return transporter
+        .sendMail({
+          from: `New user registration <${process.env.NODEMAILER_EMAIL}>`,
+          to: email,
+          subject: 'Confirm your subscription',
+          html: `Please verify your registration by followig the link: http://localhost:3000/auth/confirm/${user.confirmationCode}`
+        })
+      })
+    .then(result => {
+        console.log('Email was sent successfully.');
+        console.log(result);
+        res.redirect('/');
+      })
+      .catch(error => {
+        next(error);
       });
-    })
-    .then(user => {
-      req.session.user = user._id;
-      res.redirect('/');
-    })
-    .catch(error => {
-      next(error);
     });
+
+
+router.get('/auth/confirm/:confirmationCode', (req, res, next) => {
+  const confirmationCodeReturn = req.params.confirmationCodeReturn;
+  if(confirmationCodeReturn === req.body.confirmationCode) {
+    req.body.status = 'Active'}
+    console.log('User successfully verified e-mail')
+    console.log( req.body.status)
+    res.render('confirmation');
 });
+
 
 router.get('/sign-in', (req, res, next) => {
   res.render('sign-in');
@@ -72,4 +117,10 @@ router.get('/private', routeGuard, (req, res, next) => {
   res.render('private');
 });
 
+
+router.get('/profile', routeGuard, (req, res, next) => {
+  status = req.body.status
+  res.render('profile');
+});
+  
 module.exports = router;
